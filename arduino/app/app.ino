@@ -49,14 +49,29 @@ const String setupPage = "<html>\
   <body>\
     <h1>Setup</h1>\
     <form method=\"post\" enctype=\"application/x-www-form-urlencoded\" action=\"/setup/\">\
-      <label for=\"UserID\">User ID:</label>\
-      <input type=\"text\" name=\"User ID\" id=\"UserID\" required>\
+      <label for=\"email\">Email:</label>\
+      <input type=\"email\" name=\"User ID\" id=\"email\" required>\
       <label for=\"NetworkName\">Network Name:</label>\
       <input type=\"text\" name=\"Network Name\" id=\"NetworkName\" required>\
       <label for=\"NetworkPassword\">Network Password:</label>\
       <input type=\"password\" name=\"Network Password\" id=\"NetworkPassword\" required>\
       <input class=\"btn\" type=\"submit\" value=\"Submit\">\
     </form>\
+  </body>\
+</html>";
+
+const String setupCompletePage = "<html>\
+  <head>\
+    <head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\
+    <title>Setup Complete</title>\
+    <style>\
+      body { background-color: #64635b; font-family: Arial, Helvetica, Sans-Serif; color: #fff; text-align: center; font-size: 150%; margin: 0; padding: 1em; }\
+    </style>\
+  </head>\
+  <body>\
+    <h1>Setup Complete!</h1>\
+    <h3>You now can disconnect from the device network.</h3>\
+    <h3>This device will be soon available from your user panel.</h3>\
   </body>\
 </html>";
 
@@ -71,7 +86,7 @@ void handle_OnSetup() {
     userEmail = server.arg(0);
     userSsid = server.arg(1);
     userPassword = server.arg(2);
-    server.send(200, "text/plain", "Ok");
+    server.send(200, "text/html", setupCompletePage);
   }
 }
 
