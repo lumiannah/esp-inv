@@ -1,7 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <Preferences.h>
 
-bool networkInitComplete;
+Preferences preferences;
+bool isInitialSetupComplete;
 
 const char* setupSsid = "ESP-INV";
 const char* setupPassword = "12345678";
@@ -17,21 +19,53 @@ ESP8266WebServer server(80);
 
 void setup() {
   Serial.begin(9600);
+  delay(2000);
 
+  // Open preferences memory and read init state 
+  preferences.begin("creds", false);
+  isInitialSetupComplete = preferences.getBool("init", false);
+
+  // If setup is already completed then connect to the user's network
+  // Else start first-time-setup
+  if (isInitialSetupComplete) {
+    userEmail = preferences.getString("email");
+    userSsid = preferences.getString("ssid"); 
+    userPassword = preferences.getString("pw");
+    connectToUserNetwork();
+  } else {
+    startSetupServer();
+  }
+}
+
+void startSetupServer() {
+  // Start setup wifi
   WiFi.softAP(setupSsid, setupPassword);
   WiFi.softAPConfig(local_ip, gateway, subnet);
   delay(500);
 
+  // Attach routes and start the server
   server.on("/", handle_OnConnect);
   server.on("/setup/", handle_OnSetup);
   server.onNotFound(handle_NotFound);
-
   server.begin();
-  Serial.println("HTTP server started");
+}
+
+void connectToUserNetwork() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(userSsid.c_str(), userPassword.c_str());
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+  }
 }
 
 void loop() {
+  delay(3000);
+  if (isInitialSetupComplete) {
+    Serial.println("connected to user network");
+    Serial.println(WiFi.localIP());
+  } else {
     server.handleClient();
+  }
 }
 
 const String setupPage = "<html>\
@@ -49,8 +83,8 @@ const String setupPage = "<html>\
   <body>\
     <h1>Setup</h1>\
     <form method=\"post\" enctype=\"application/x-www-form-urlencoded\" action=\"/setup/\">\
-      <label for=\"email\">Email:</label>\
-      <input type=\"email\" name=\"User ID\" id=\"email\" required>\
+      <label for=\"Email\">Email:</label>\
+      <input type=\"email\" name=\"Email\" id=\"Email\" required>\
       <label for=\"NetworkName\">Network Name:</label>\
       <input type=\"text\" name=\"Network Name\" id=\"NetworkName\" required>\
       <label for=\"NetworkPassword\">Network Password:</label>\
@@ -80,13 +114,26 @@ void handle_OnConnect() {
 }
 
 void handle_OnSetup() {
+  // If somehow form data doesn't have all 3 required fields
   if (server.args() != 3) {
     server.send(400, "text/plain", "All 3 input fields are required to be filled.");
   } else {
+    // Get params from the posted form data
     userEmail = server.arg(0);
     userSsid = server.arg(1);
     userPassword = server.arg(2);
+
+    // Save data permanently into device's flash
+    preferences.putBool("init", true);
+    preferences.putString("email", userEmail);
+    preferences.putString("ssid", userSsid);
+    preferences.putString("pw", userPassword);
+    preferences.end();
+
+    // Send Setup Complete Page to the user and restart the device
     server.send(200, "text/html", setupCompletePage);
+    delay(5000);
+    ESP.restart();
   }
 }
 
