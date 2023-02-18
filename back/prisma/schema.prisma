@@ -1,0 +1,50 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Device {
+    id               Int       @id @default(autoincrement())
+    user_id          Int
+    mac              String
+    name             String?
+    description      String?
+    date_created     DateTime  @default(now())
+    date_calibrated  DateTime?
+    initial_distance Int?
+    item_width       Int?
+    item_max_amount  Int?
+    user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model User {
+    id              Int       @id @default(autoincrement())
+    email           String    @unique
+    password        String
+    activation_code String    @unique @default(uuid())
+    date_created    DateTime  @default(now())
+    date_logged     DateTime?
+    activated       Boolean   @default(false)
+    banned          Boolean   @default(false)
+    admin           Boolean   @default(false)
+    devices         Device[]
+    token           Token?
+}
+
+model Token {
+    user_id      Int      @unique
+    token        String
+    date_expires DateTime @default(dbgenerated("NOW() + interval '10 minutes'"))
+    user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Session {
+    id        String   @id
+    sid       String   @unique
+    data      String
+    expiresAt DateTime
+}
