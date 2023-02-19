@@ -140,8 +140,7 @@ const updateUser = async (req, res) => {
         await databaseClient.user.update({
           where: { id },
           data: {
-            hashed_email: createHash('sha256').update(newEmail).digest('base64'),
-            encrypted_email: encrypt(newEmail),
+            email: createHash('sha256').update(newEmail).digest('base64'),
           },
         })
       }
@@ -230,7 +229,7 @@ const requestPasswordReset = async (req, res) => {
 
     const user = await databaseClient.user.findUnique({
       where: {
-        hashed_email: createHash('sha256').update(email).digest('base64'),
+        email: createHash('sha256').update(email).digest('base64'),
       },
       select: {
         id: true,

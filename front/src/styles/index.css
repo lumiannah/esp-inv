@@ -1,0 +1,55 @@
+@import 'reset.css';
+
+:root {
+  --color-attn: #e3cd53;
+}
+
+body {
+  font-size: 1.5em;
+  background-color: #64635b;
+  color: #fff;
+  padding: 1em;
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2em;
+  margin-block: 0.5em;
+}
+
+a {
+  color: var(--color-attn);
+  text-decoration: none;
+}
+
+form {
+  display: grid;
+  text-align: center;
+  margin-top: 1em;
+}
+
+input {
+  width: 100%;
+  background-color: #fff;
+  margin-block: 0.5em 1em;
+  padding: 1em;
+  border-radius: 0.25em;
+  box-shadow: 0 0 0 1px #000;
+}
+
+input[type='submit'] {
+  background-color: var(--color-attn);
+  color: #333;
+  font-weight: bold;
+}
+
+.error {
+  background-color: #8f3838;
+  padding: 0.5em;
+  border-radius: 0.25em;
+  font-size: 0.75em;
+  margin-block: 0.25em;
+}

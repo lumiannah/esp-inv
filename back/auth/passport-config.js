@@ -12,7 +12,7 @@ export const initPassportConfig = (passport) => {
       const hashedEmail = createHash('sha256').update(email).digest('base64')
       const user = await databaseClient.user.findUnique({
         where: {
-          hashed_email: hashedEmail,
+          email: hashedEmail,
         },
         select: {
           id: true,

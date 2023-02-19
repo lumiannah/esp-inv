@@ -1,0 +1,15 @@
+nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+}
+
+.nav-el {
+  text-align: center;
+  background-color: #333131;
+  padding: 1em;
+}
+
+.nav-el.active {
+  background-color: #732222;
+}
