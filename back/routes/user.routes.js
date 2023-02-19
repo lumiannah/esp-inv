@@ -37,7 +37,7 @@ router.post('/login', userLoginRules(), loginUser)
 router.get('/', authRequired, getUser)
 
 // Updation of user
-router.post('/update/:id', authRequired, userUpdationRules(), updateUser)
+router.put('/update/:id', authRequired, userUpdationRules(), updateUser)
 
 // Deletion of user
 router.delete('/delete/:id', authRequired, userDeletionRules(), deleteUser)
