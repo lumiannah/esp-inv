@@ -31,7 +31,8 @@ form {
   margin-top: 1em;
 }
 
-input {
+input,
+button {
   width: 100%;
   background-color: #fff;
   margin-block: 0.5em 1em;
@@ -40,7 +41,8 @@ input {
   box-shadow: 0 0 0 1px #000;
 }
 
-input[type='submit'] {
+input[type='submit'],
+button {
   background-color: var(--color-attn);
   color: #333;
   font-weight: bold;
