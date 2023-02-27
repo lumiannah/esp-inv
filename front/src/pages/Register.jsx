@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { useIsLoggedIn } from '../store/store-zustand'
+import { Link, useNavigate } from 'react-router-dom'
 import { createNewAccount } from '../api/UserAPI'
 import ReCAPTCHA from 'react-google-recaptcha'
 
@@ -10,8 +9,6 @@ const initialFormData = {
 }
 
 function Register() {
-  const isLoggedIn = useIsLoggedIn()
-
   const [formData, setFormData] = useState(initialFormData)
   const { email, password } = formData
   const [emailErrors, setEmailErrors] = useState(null)
@@ -19,8 +16,6 @@ function Register() {
   const [tokenErrors, setTokenErrors] = useState(null)
   const captchaRef = useRef(null)
 
-  const location = useLocation()
-  const from = location.state?.from?.pathname || '/user'
   const navigate = useNavigate()
 
   const handleInput = (e) => {
@@ -54,8 +49,6 @@ function Register() {
       }
     }
   }
-
-  if (isLoggedIn) return <Navigate to="/user" state={{ from }} replace />
 
   return (
     <form onSubmit={handleSubmit}>

@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loginToAccount } from '../api/UserAPI'
-import { useIsLoggedIn, useLoginUser } from '../store/store-zustand'
+import { useLoginUser, useUser } from '../store/store-zustand'
 
 const initialFormData = {
   email: '',
   password: '',
 }
 
-function Login() {
-  const isLoggedIn = useIsLoggedIn()
+function Login({ sessionExpired = false }) {
   const loginUser = useLoginUser()
+  const user = useUser()
 
   const [formData, setFormData] = useState(initialFormData)
   const [loginErrors, setLoginErrors] = useState(false)
@@ -40,10 +40,9 @@ function Login() {
     }
   }
 
-  if (isLoggedIn) return <Navigate to="/user" state={{ from }} replace />
-
   return (
     <form onSubmit={handleSubmit}>
+      {user?.id && sessionExpired && <strong className="error">Your session has expired, please login again.</strong>}
       <h2>Login</h2>
 
       <label htmlFor="email">Email</label>
