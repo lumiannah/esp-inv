@@ -11,7 +11,7 @@ const userCreationRules = () => {
       .trim()
       .isEmail()
       .withMessage('Invalid E-mail address')
-      .normalizeEmail()
+      .normalizeEmail({ gmail_remove_dots: false })
       .custom(async (value) => {
         const hashedEmail = createHash('sha256').update(value).digest('base64')
         const user = await databaseClient.user.findUnique({
@@ -43,7 +43,7 @@ const userActivationRules = () => {
 // validates: body.email, body.password
 const userLoginRules = () => {
   return [
-    body('email').trim().isEmail().normalizeEmail(),
+    body('email').trim().isEmail().normalizeEmail({ gmail_remove_dots: false }),
 
     body('password')
       .trim()
@@ -65,7 +65,7 @@ const userUpdationRules = () => {
       .optional({ nullable: true, checkFalsy: true })
       .isEmail()
       .withMessage('Invalid E-mail address')
-      .normalizeEmail()
+      .normalizeEmail({ gmail_remove_dots: false })
       .custom(async (value) => {
         const hashedEmail = createHash('sha256').update(value).digest('base64')
         const user = await databaseClient.user.findUnique({

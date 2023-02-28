@@ -11,7 +11,10 @@ function Navbar() {
       <Link to="/" className={'nav-el ' + (isActivePage('') ? 'active' : '')}>
         Home
       </Link>
-      <Link to="/user" className={'nav-el ' + (isActivePage('/user') ? 'active' : '')}>
+      <Link to="/devices" className={'nav-el ' + (isActivePage('devices') ? 'active' : '')}>
+        Devices
+      </Link>
+      <Link to="/user" className={'nav-el ' + (isActivePage('user') ? 'active' : '')}>
         User
       </Link>
     </nav>

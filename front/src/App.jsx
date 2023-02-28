@@ -27,6 +27,7 @@ const router = createBrowserRouter(
 
       {/* protected */}
       <Route loader={protectedRouteLoader} errorElement={lazyPageLoader('Login', { sessionExpired: true })}>
+        <Route path="/devices" element={lazyPageLoader('Devices')} />
         <Route path="/user" element={lazyPageLoader('User')} loader={userDataLoader} />
       </Route>
 
