@@ -1,15 +1,18 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Preferences.h>
+#include <ESP8266HTTPClient.h>
 
 Preferences preferences;
-bool isInitialSetupComplete;
+bool isNetworkSetupComplete;
+bool isDeviceSetupComplete;
 
 const char* setupSsid = "ESP-INV";
 const char* setupPassword = "12345678";
 String userEmail;
 String userSsid;
 String userPassword;
+String deviceId;
 
 IPAddress local_ip(192,168,1,1);
 IPAddress gateway(192,168,1,1);
@@ -19,19 +22,27 @@ ESP8266WebServer server(80);
 
 void setup() {
   Serial.begin(9600);
-  delay(2000);
+  delay(5000);
 
   // Open preferences memory and read init state 
   preferences.begin("creds", false);
-  isInitialSetupComplete = preferences.getBool("init", false);
+  isNetworkSetupComplete = preferences.getBool("networkInit", false);
+  isDeviceSetupComplete = preferences.getBool("deviceInit", false);
 
   // If setup is already completed then connect to the user's network
   // Else start first-time-setup
-  if (isInitialSetupComplete) {
+  if (isNetworkSetupComplete) {
     userEmail = preferences.getString("email");
-    userSsid = preferences.getString("ssid"); 
+    userSsid = preferences.getString("ssid");
     userPassword = preferences.getString("pw");
+
     connectToUserNetwork();
+
+    if (isDeviceSetupComplete) {
+      deviceId = preferences.getString("id");
+    } else {
+      initDevice();
+    }
   } else {
     startSetupServer();
   }
@@ -52,17 +63,38 @@ void startSetupServer() {
 
 void connectToUserNetwork() {
   WiFi.mode(WIFI_STA);
-  WiFi.begin(userSsid.c_str(), userPassword.c_str());
+  WiFi.begin(userSsid, userPassword);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
   }
+  
+}
+
+void initDevice() {
+  WiFiClient client;
+  HTTPClient http;
+  String mac = WiFi.macAddress();
+
+  // setup a new device, send mac and email to api and receive deviceId
+  http.begin(client, "http://192.168.101.100:3333/api/v1/device/add");
+  http.addHeader("Content-Type", "application/json");
+  int httpCode = http.POST("{\"mac\":\""+ mac +"\", \"email\":\""+ userEmail + "\"}");
+
+  // if success write deviceId into memory
+  if(httpCode == 201) {
+    deviceId = http.getString();
+    http.end();
+    preferences.putBool("deviceInit", true);
+    preferences.putString("id", deviceId);
+    preferences.end();
+    ESP.restart();
+  } 
 }
 
 void loop() {
-  delay(3000);
-  if (isInitialSetupComplete) {
-    Serial.println("connected to user network");
-    Serial.println(WiFi.localIP());
+  delay(1000);
+  if (isNetworkSetupComplete && isDeviceSetupComplete) {
+    // @todo
   } else {
     server.handleClient();
   }
@@ -124,7 +156,7 @@ void handle_OnSetup() {
     userPassword = server.arg(2);
 
     // Save data permanently into device's flash
-    preferences.putBool("init", true);
+    preferences.putBool("networkInit", true);
     preferences.putString("email", userEmail);
     preferences.putString("ssid", userSsid);
     preferences.putString("pw", userPassword);
