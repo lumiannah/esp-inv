@@ -32,6 +32,8 @@ const int dataLoggingInterval = 100;
 const int dataFilterRadius = 5;
 int values[dataPointsToMeasure];
 int loopCount = 0;
+int previousDistanceValue = 0;
+int distanceTolerance = 5;
 
 // distance calibrations with regression
 LinearRegression lr1 = LinearRegression();
@@ -245,6 +247,7 @@ void initSensor() {
 }
 
 void measureLoop() {
+  // if enough data is saved proceed to find median avarage value
   if(loopCount == dataPointsToMeasure-1) {
     bubbleSort(values, dataPointsToMeasure);
     loopCount = 0;
@@ -276,10 +279,8 @@ void measureLoop() {
       lr7.parameters(LRvalues);
     }
     
-    const int fixedVal = (medianAverage * LRvalues[0] + LRvalues[1]);
-    Serial.print(medianAverage);
-    Serial.print(" : ");
-    Serial.println(fixedVal);
+    const int calibratedValue = (medianAverage * LRvalues[0] + LRvalues[1]);
+    processDistanceData(calibratedValue);
   }
 
   int distance = sensor.readRangeContinuousMillimeters();
@@ -289,6 +290,17 @@ void measureLoop() {
   if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
 
   delay(dataLoggingInterval);
+}
+
+void processDistanceData(int currentValue) {
+  const int topLimit = previousDistanceValue + distanceTolerance;
+  const int bottomLimit = previousDistanceValue - distanceTolerance;
+  
+  if (currentValue > topLimit || currentValue < bottomLimit) {
+    previousDistanceValue = currentValue;
+    Serial.println("value has changed");
+    Serial.println(currentValue);
+  }
 }
 
 void bubbleSort(int arr[], int n) {
