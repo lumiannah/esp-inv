@@ -300,7 +300,18 @@ void processDistanceData(int currentValue) {
     previousDistanceValue = currentValue;
     Serial.println("value has changed");
     Serial.println(currentValue);
+    sendDistanceDataToAPI(currentValue);
   }
+}
+
+void sendDistanceDataToAPI(int distanceValue) {
+  WiFiClient client;
+  HTTPClient http;
+
+  http.begin(client, "http://192.168.101.100:3333/api/v1/device/data");
+  http.addHeader("Content-Type", "application/json");
+  http.POST("{\"deviceId\":\""+ deviceId +"\", \"distance\":\""+ String(distanceValue) + "\"}");
+  http.end();
 }
 
 void bubbleSort(int arr[], int n) {

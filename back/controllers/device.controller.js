@@ -38,16 +38,27 @@ const addSensorData = async (req, res) => {
   const { deviceId, distance } = req.body
 
   try {
-    await databaseClient.sensorData.create({
+    const device = await databaseClient.device.findUnique({
+      where: {
+        id: +deviceId,
+      },
+    })
+
+    if (!device) return res.sendStatus(403)
+
+    const data = await databaseClient.sensorData.create({
       data: {
         device_id: +deviceId,
         value: +distance,
       },
     })
+
+    console.log(data)
+
     return res.sendStatus(201)
   } catch (error) {
     console.error(error)
-    return res.sendStatus(403)
+    return res.sendStatus(500)
   }
 }
 
