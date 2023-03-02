@@ -8,17 +8,18 @@ datasource db {
 }
 
 model Device {
-    id               Int       @id @default(autoincrement())
+    id               Int          @id @default(autoincrement())
     user_id          Int
     mac              String
     name             String?
     description      String?
-    date_created     DateTime  @default(now())
+    date_created     DateTime     @default(now())
     date_calibrated  DateTime?
     initial_distance Int?
     item_width       Int?
     item_max_amount  Int?
-    user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user             User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    sensor_data      SensorData[]
 }
 
 model User {
@@ -40,6 +41,14 @@ model Token {
     token        String
     date_expires DateTime @default(dbgenerated("NOW() + interval '10 minutes'"))
     user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model SensorData {
+    id        Int      @id @default(autoincrement())
+    device_id Int
+    date      DateTime @default(now())
+    value     Int
+    device    Device   @relation(fields: [device_id], references: [id], onDelete: Cascade)
 }
 
 model Session {
