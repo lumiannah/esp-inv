@@ -17,4 +17,9 @@ const dataAdditionRules = () => {
   ]
 }
 
-export { deviceAdditionRules, dataAdditionRules }
+// validates: param.id
+const initialDistanceRules = () => {
+  return [param('id').isInt(), validate]
+}
+
+export { deviceAdditionRules, dataAdditionRules, initialDistanceRules }

@@ -62,6 +62,50 @@ const addSensorData = async (req, res) => {
   }
 }
 
+const calibrateInitialDistance = async (req, res) => {
+  try {
+    const device = await databaseClient.device.findUnique({
+      where: {
+        id: +req.param.id,
+      },
+      select: {
+        id: true,
+        user_id: true,
+        sensor_data: {
+          take: 1,
+          orderBy: {
+            id: 'desc',
+          },
+          select: {
+            value: true,
+          },
+        },
+      },
+    })
+
+    const recentDistanceValue = device?.sensor_data[0]?.value
+
+    if (!device || device.user_id !== req.user.id) return res.sendStatus(403)
+    if (!recentDistanceValue) return res.sendStatus(400)
+
+    const data = await databaseClient.device.update({
+      where: {
+        id: device.id,
+      },
+      data: {
+        initial_distance: recentDistanceValue,
+      },
+    })
+
+    console.log(data)
+
+    return res.sendStatus(200)
+  } catch (error) {
+    console.error(error)
+    return res.sendStatus(500)
+  }
+}
+
 const getDevices = (req, res) => {
   try {
     const devices = databaseClient.device.findMany({
@@ -85,4 +129,4 @@ const getDevices = (req, res) => {
   }
 }
 
-export { addDevice, addSensorData, getDevices }
+export { addDevice, addSensorData, calibrateInitialDistance, getDevices }
