@@ -16,7 +16,7 @@ model Device {
     date_created     DateTime     @default(now())
     date_calibrated  DateTime?
     initial_distance Int?
-    item_width       Int?
+    item_width       Float?
     item_max_amount  Int?
     user             User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
     sensor_data      SensorData[]

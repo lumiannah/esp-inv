@@ -135,7 +135,7 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
 
     const recentDistanceValue = device.sensor_data[0].value
     const deltaDistance = device.initial_distance - recentDistanceValue
-    const itemWidth = ~~(deltaDistance / itemCount)
+    const itemWidth = deltaDistance / itemCount
     const maxAmount = ~~((device.initial_distance - 50) / itemWidth)
 
     const data = await databaseClient.device.update({
@@ -145,6 +145,7 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
       data: {
         item_width: itemWidth,
         item_max_amount: maxAmount,
+        date_calibrated: new Date().toISOString(),
       },
     })
 
@@ -157,7 +158,7 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
   }
 }
 
-const getDevices = (req, res) => {
+const getUserDevices = (req, res) => {
   try {
     const devices = databaseClient.device.findMany({
       where: {
@@ -171,8 +172,46 @@ const getDevices = (req, res) => {
         initial_distance: true,
         item_max_amount: true,
         item_width: true,
+        sensor_data: {
+          take: 1,
+          orderBy: {
+            id: 'desc',
+          },
+          select: {
+            value: true,
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
       },
     })
+
+    if (!devices) return res.sendStatus(204)
+
+    for (const device of devices) {
+      if (device.date_calibrated) {
+        const deltaDistance = device.initial_distance - device.sensor_data[0].value
+        const stockAmount = Math.round(deltaDistance / device.item_width)
+        const stockPercent = Math.round((stockAmount / device.item_max_amount) * 100)
+
+        device.item_stock_amount = stockAmount
+        device.item_stock_percent = stockPercent
+
+        if (percent > 66) {
+          device.item_stock_code = 3
+        } else if (percent > 33) {
+          device.item_stock_code = 2
+        } else {
+          device.item_stock_code = 1
+        }
+
+        delete device.sensor_data
+        delete device.initial_distance
+        delete device.item_width
+      }
+    }
+
     return res.status(200).json(devices)
   } catch (error) {
     console.error(error)
@@ -180,4 +219,4 @@ const getDevices = (req, res) => {
   }
 }
 
-export { addDevice, addSensorData, calibrateInitialDistance, calibrateItemWidthAndMaxAmount, getDevices }
+export { addDevice, addSensorData, calibrateInitialDistance, calibrateItemWidthAndMaxAmount, getUserDevices }
