@@ -1,13 +1,28 @@
 @import 'reset.css';
 
 :root {
+  --color-bg: #212121;
+  --color-bg-secondary: #404849;
+  --color-text: #c6c6c6;
   --color-attn: #e3cd53;
+  --color-stock-good: #324e3b;
+  --color-stock-good-hc: #43c258;
+  --color-stock-neutral: #695d30;
+  --color-stock-neutral-hc: #fcd00d;
+  --color-stock-warning: #693230;
+  --color-stock-warning-hc: #ff0000;
+  --color-error-bg: #8f3838;
 }
 
 body {
   font-size: 1.5em;
-  background-color: #64635b;
-  color: #fff;
+  font-size: clamp(1em, 2vw, 2em);
+  font-family: 'Noto Serif';
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+main {
   padding: 1em;
 }
 
@@ -28,13 +43,14 @@ a {
 form {
   display: grid;
   text-align: center;
-  margin-top: 1em;
+  max-width: 800px;
+  margin-inline: auto;
 }
 
 input,
 button {
   width: 100%;
-  background-color: #fff;
+  background-color: var(--color-text);
   margin-block: 0.5em 1em;
   padding: 1em;
   border-radius: 0.25em;
@@ -49,9 +65,67 @@ button {
 }
 
 .error {
-  background-color: #8f3838;
+  background-color: var(--color-error-bg);
   padding: 0.5em;
   border-radius: 0.25em;
   font-size: 0.75em;
   margin-block: 0.25em;
+}
+
+caption {
+  font-size: 2em;
+  margin-block: 0.5em;
+}
+
+table {
+  margin-inline: auto;
+  border-spacing: 0.5em 0.75em;
+}
+
+th,
+td {
+  padding: 0.75em 1em;
+  border-radius: 0.25em;
+}
+
+thead th {
+  background-color: var(--color-bg-secondary);
+  text-align: left;
+}
+
+th {
+  font-weight: bold;
+}
+
+tr[data-item-stock-code='3'] td,
+tr[data-item-stock-code='3'] th {
+  background-color: var(--color-stock-good);
+}
+
+tr[data-item-stock-code='2'] td,
+tr[data-item-stock-code='2'] th {
+  background-color: var(--color-stock-neutral);
+}
+
+tr[data-item-stock-code='1'] td,
+tr[data-item-stock-code='1'] th {
+  background-color: var(--color-stock-warning);
+}
+
+.btn-with-icon {
+  padding: unset;
+  margin: unset;
+  width: fit-content;
+  background-color: unset;
+  box-shadow: none;
+  color: unset;
+  font-size: 1.5em;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.devices {
+  overflow-x: auto;
 }

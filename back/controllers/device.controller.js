@@ -66,7 +66,7 @@ const calibrateInitialDistance = async (req, res) => {
   try {
     const device = await databaseClient.device.findUnique({
       where: {
-        id: +req.param.id,
+        id: +req.params.id,
       },
       select: {
         id: true,
@@ -112,7 +112,7 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
   try {
     const device = await databaseClient.device.findUnique({
       where: {
-        id: +req.param.id,
+        id: +req.params.id,
       },
       select: {
         id: true,
@@ -158,9 +158,9 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
   }
 }
 
-const getUserDevices = (req, res) => {
+const getUserDevices = async (req, res) => {
   try {
-    const devices = databaseClient.device.findMany({
+    const devices = await databaseClient.device.findMany({
       where: {
         user_id: req.user.id,
       },
@@ -198,18 +198,17 @@ const getUserDevices = (req, res) => {
         device.item_stock_amount = stockAmount
         device.item_stock_percent = stockPercent
 
-        if (percent > 66) {
+        if (stockPercent > 66) {
           device.item_stock_code = 3
-        } else if (percent > 33) {
+        } else if (stockPercent > 33) {
           device.item_stock_code = 2
         } else {
           device.item_stock_code = 1
         }
-
-        delete device.sensor_data
-        delete device.initial_distance
-        delete device.item_width
       }
+      delete device.sensor_data
+      delete device.initial_distance
+      delete device.item_width
     }
 
     return res.status(200).json(devices)

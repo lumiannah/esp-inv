@@ -1,8 +1,13 @@
+import { useLoaderData } from 'react-router-dom'
+import DeviceList from '../components/Devices/DeviceList'
+
 function Devices() {
+  const devices = useLoaderData()
+
   return (
-    <div>
-      <h2>Devices</h2>
-    </div>
+    <section className="devices">
+      <DeviceList devices={devices} />
+    </section>
   )
 }
 

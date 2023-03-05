@@ -41,23 +41,25 @@ function Login({ sessionExpired = false }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {user?.id && sessionExpired && <strong className="error">Your session has expired, please login again.</strong>}
-      <h2>Login</h2>
+    <section>
+      <form onSubmit={handleSubmit}>
+        {user?.id && sessionExpired && <strong className="error">Your session has expired, please login again.</strong>}
+        <h2>Login</h2>
 
-      <label htmlFor="email">Email</label>
-      <input value={formData.email} onInput={handleInput} type="email" name="email" id="email" required />
+        <label htmlFor="email">Email</label>
+        <input value={formData.email} onInput={handleInput} type="email" name="email" id="email" required />
 
-      <label htmlFor="password">Password</label>
-      <input value={formData.password} onInput={handleInput} type="password" name="password" id="password" required />
+        <label htmlFor="password">Password</label>
+        <input value={formData.password} onInput={handleInput} type="password" name="password" id="password" required />
 
-      {loginErrors && <strong className="error">Login failed, check your credentials.</strong>}
+        {loginErrors && <strong className="error">Login failed, check your credentials.</strong>}
 
-      <input type="submit" value="Login" />
+        <input type="submit" value="Login" />
 
-      <p>Don't have an account?</p>
-      <Link to="/register">Register</Link>
-    </form>
+        <p>Don't have an account?</p>
+        <Link to="/register">Register</Link>
+      </form>
+    </section>
   )
 }
 
