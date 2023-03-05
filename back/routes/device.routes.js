@@ -5,11 +5,13 @@ import {
   addSensorData,
   calibrateInitialDistance,
   calibrateItemWidthAndMaxAmount,
+  getUserDeviceById,
   getUserDevices,
 } from '../controllers/device.controller.js'
 import {
   dataAdditionRules,
   deviceAdditionRules,
+  getDeviceRules,
   initialDistanceRules,
   itemCalibrationRules,
 } from '../validations/device.validations.js'
@@ -30,5 +32,8 @@ router.post('/calibrate/item/:id', authRequired, itemCalibrationRules(), calibra
 
 // Get user devices
 router.get('/', authRequired, getUserDevices)
+
+// Get user device by Id
+router.get('/:id', authRequired, getDeviceRules(), getUserDeviceById)
 
 export default router

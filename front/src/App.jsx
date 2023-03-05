@@ -1,7 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route, Outlet } from 'react-router-dom'
 import Navbar from './components/Navigation/Navbar'
 import { AuthProvider, protectedRouteLoader } from './components/Auth/AuthProvider'
-import { userDataLoader, userDevicesLoader } from './loaders/dataLoaders'
+import { deviceDataLoader, userDataLoader, userDevicesLoader } from './loaders/dataLoaders'
 import { lazyPageLoader } from './loaders/lazyPageLoader'
 
 const Root = () => {
@@ -28,6 +28,12 @@ const router = createBrowserRouter(
       {/* protected */}
       <Route loader={protectedRouteLoader} errorElement={lazyPageLoader('Login', { sessionExpired: true })}>
         <Route path="/devices" element={lazyPageLoader('Devices')} loader={userDevicesLoader} />
+        <Route
+          path="/devices/:id"
+          element={lazyPageLoader('DeviceSettings')}
+          loader={deviceDataLoader}
+          errorElement={lazyPageLoader('PageNotFound')}
+        />
         <Route path="/user" element={lazyPageLoader('User')} loader={userDataLoader} />
       </Route>
 

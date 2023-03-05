@@ -27,4 +27,9 @@ const itemCalibrationRules = () => {
   return [param('id').isInt(), body('itemCount').isInt(), validate]
 }
 
-export { deviceAdditionRules, dataAdditionRules, initialDistanceRules, itemCalibrationRules }
+// validates: param.id
+const getDeviceRules = () => {
+  return [param('id').isInt(), validate]
+}
+
+export { deviceAdditionRules, dataAdditionRules, initialDistanceRules, itemCalibrationRules, getDeviceRules }

@@ -15,4 +15,22 @@ const getUserDevices = async () => {
   return response.data
 }
 
-export { calibrateInitialDistance, calibrateItemWidthAndMaxAmount, getUserDevices }
+const getUserDeviceById = async (deviceId) => {
+  const response = await api.get('/device/' + deviceId)
+  return response.data
+}
+
+const updateUserDeviceById = async (deviceId, name, description) => {
+  await api.put('/device/' + deviceId, {
+    name,
+    description,
+  })
+}
+
+export {
+  calibrateInitialDistance,
+  calibrateItemWidthAndMaxAmount,
+  getUserDevices,
+  getUserDeviceById,
+  updateUserDeviceById,
+}

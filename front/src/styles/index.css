@@ -35,6 +35,11 @@ h2 {
   margin-block: 0.5em;
 }
 
+h3 {
+  font-size: 1.5em;
+  margin-block: 0.5em;
+}
+
 a {
   color: var(--color-attn);
   text-decoration: none;
@@ -48,13 +53,15 @@ form {
 }
 
 input,
-button {
+button,
+textarea {
   width: 100%;
   background-color: var(--color-text);
   margin-block: 0.5em 1em;
   padding: 1em;
   border-radius: 0.25em;
   box-shadow: 0 0 0 1px #000;
+  outline: none;
 }
 
 input[type='submit'],
@@ -128,4 +135,12 @@ tr[data-item-stock-code='1'] th {
 
 .devices {
   overflow-x: auto;
+}
+
+.mt-1 {
+  margin-top: 1em;
+}
+
+.mt-2 {
+  margin-top: 2em;
 }

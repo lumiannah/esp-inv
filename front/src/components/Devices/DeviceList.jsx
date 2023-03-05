@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { FaTools } from 'react-icons/fa'
 
 const statusColor = (item_stock_percent = 0, isHighContrast = false) => {
@@ -47,9 +48,11 @@ function DeviceList({ devices = [] }) {
                 <th scope="row">{name || 'No device name added'}</th>
                 <td>{description || 'No device description added'}</td>
                 <td className="center-text">
-                  <button className="btn-with-icon">
-                    <FaTools />
-                  </button>
+                  <Link to={`${id}`}>
+                    <button className="btn-with-icon">
+                      <FaTools />
+                    </button>
+                  </Link>
                 </td>
               </tr>
             )

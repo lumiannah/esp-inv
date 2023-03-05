@@ -218,4 +218,66 @@ const getUserDevices = async (req, res) => {
   }
 }
 
-export { addDevice, addSensorData, calibrateInitialDistance, calibrateItemWidthAndMaxAmount, getUserDevices }
+const getUserDeviceById = async (req, res) => {
+  try {
+    const device = await databaseClient.device.findUnique({
+      where: {
+        id: +req.params.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        date_calibrated: true,
+        initial_distance: true,
+        item_max_amount: true,
+        item_width: true,
+        user_id: true,
+        sensor_data: {
+          take: 1,
+          orderBy: {
+            id: 'desc',
+          },
+          select: {
+            value: true,
+          },
+        },
+      },
+    })
+
+    if (!device || device.user_id !== req.user.id) return res.sendStatus(403)
+
+    if (device.date_calibrated) {
+      const deltaDistance = device.initial_distance - device.sensor_data[0].value
+      const stockAmount = Math.round(deltaDistance / device.item_width)
+      const stockPercent = Math.round((stockAmount / device.item_max_amount) * 100)
+
+      device.item_stock_amount = stockAmount
+      device.item_stock_percent = stockPercent
+
+      if (stockPercent > 66) {
+        device.item_stock_code = 3
+      } else if (stockPercent > 33) {
+        device.item_stock_code = 2
+      } else {
+        device.item_stock_code = 1
+      }
+    }
+    delete device.sensor_data
+    delete device.user_id
+
+    return res.status(200).json(device)
+  } catch (error) {
+    console.error(error)
+    return res.sendStatus(500)
+  }
+}
+
+export {
+  addDevice,
+  addSensorData,
+  calibrateInitialDistance,
+  calibrateItemWidthAndMaxAmount,
+  getUserDevices,
+  getUserDeviceById,
+}
