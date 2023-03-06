@@ -69,6 +69,7 @@ button {
   background-color: var(--color-attn);
   color: #333;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .error {
@@ -143,4 +144,35 @@ tr[data-item-stock-code='1'] th {
 
 .mt-2 {
   margin-top: 2em;
+}
+
+td a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  padding: 1.5em;
+  cursor: pointer;
+}
+
+a:hover,
+.hoverable:hover a {
+  color: yellow;
+}
+
+.hoverable {
+  cursor: pointer;
+}
+
+.hoverable:hover {
+  background-color: #2f312b !important;
+}
+
+td.hoverable {
+  padding: 0;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 }

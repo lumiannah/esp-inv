@@ -12,7 +12,8 @@ model Device {
     user_id          Int
     mac              String
     name             String?
-    description      String?
+    item_id          String?
+    item_name        String?
     date_created     DateTime     @default(now())
     date_calibrated  DateTime?
     initial_distance Int?

@@ -167,7 +167,8 @@ const getUserDevices = async (req, res) => {
       select: {
         id: true,
         name: true,
-        description: true,
+        item_id: true,
+        item_name: true,
         date_calibrated: true,
         initial_distance: true,
         item_max_amount: true,
@@ -227,7 +228,8 @@ const getUserDeviceById = async (req, res) => {
       select: {
         id: true,
         name: true,
-        description: true,
+        item_id: true,
+        item_name: true,
         date_calibrated: true,
         initial_distance: true,
         item_max_amount: true,
@@ -273,6 +275,37 @@ const getUserDeviceById = async (req, res) => {
   }
 }
 
+const updateUserDeviceById = async (req, res) => {
+  try {
+    const device = await databaseClient.device.findFirst({
+      where: {
+        id: +req.params.id,
+        user_id: req.user.id,
+      },
+    })
+
+    if (!device) return res.sendStatus(403)
+
+    const { deviceName, itemId, itemName } = req.body
+
+    await databaseClient.device.update({
+      where: {
+        id: device.id,
+      },
+      data: {
+        name: deviceName,
+        item_id: itemId,
+        item_name: itemName,
+      },
+    })
+
+    return res.sendStatus(200)
+  } catch (error) {
+    console.error(error)
+    return res.sendStatus(500)
+  }
+}
+
 export {
   addDevice,
   addSensorData,
@@ -280,4 +313,5 @@ export {
   calibrateItemWidthAndMaxAmount,
   getUserDevices,
   getUserDeviceById,
+  updateUserDeviceById,
 }

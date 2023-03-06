@@ -20,10 +20,11 @@ const getUserDeviceById = async (deviceId) => {
   return response.data
 }
 
-const updateUserDeviceById = async (deviceId, name, description) => {
-  await api.put('/device/' + deviceId, {
-    name,
-    description,
+const updateUserDeviceById = async (deviceId, deviceName, itemId, itemName) => {
+  await api.put('/device/update/' + deviceId, {
+    deviceName,
+    itemId,
+    itemName,
   })
 }
 

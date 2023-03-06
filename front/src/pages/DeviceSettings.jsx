@@ -1,22 +1,26 @@
 import { useState } from 'react'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 import CalibrateItemWidthButton from '../components/Devices/CalibrateItemWidthButton'
 import CalibrateInitialDistanceButton from '../components/Devices/CalibrateInitialDistanceButton'
 import { DateTime } from 'luxon'
+import { updateUserDeviceById } from '../api/DeviceAPI'
+import { FaBarcode, FaDiceD6, FaMicrochip } from 'react-icons/fa'
 
 function DeviceSettings() {
   const device = useLoaderData()
+  const navigate = useNavigate()
 
   const initialDeviceData = {
     id: device.id,
-    name: device.name || '',
-    description: device.description || '',
+    deviceName: device.name || '',
+    itemId: device.item_id || '',
+    itemName: device.item_name || '',
     itemCount: device.item_stock_amount || 0,
     calibrationDate: device.date_calibrated,
   }
 
   const [deviceData, setDeviceData] = useState(initialDeviceData)
-  const { id, name, description, itemCount, calibrationDate } = deviceData
+  const { id, deviceName, itemId, itemName, itemCount, calibrationDate } = deviceData
 
   const handleInput = (e) => {
     const { id, value } = e.target
@@ -26,18 +30,39 @@ function DeviceSettings() {
     }))
   }
 
-  const handleSubmit = async () => {}
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      await updateUserDeviceById(id, deviceName, itemId, itemName)
+      navigate('/devices')
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <section>
       <form onSubmit={handleSubmit}>
         <h2>Device Settings</h2>
 
-        <label htmlFor="name">Device Name</label>
-        <input value={name} onInput={handleInput} type="text" id="name" />
+        <label htmlFor="deviceName" className="header-container">
+          <FaMicrochip />
+          Device Name
+        </label>
+        <input value={deviceName} onInput={handleInput} type="text" id="deviceName" />
 
-        <label htmlFor="description">Description</label>
-        <textarea value={description} onInput={handleInput} id="description" />
+        <label htmlFor="itemId" className="header-container">
+          <FaBarcode />
+          Item ID
+        </label>
+        <input value={itemId} onInput={handleInput} type="text" id="itemId" />
+
+        <label htmlFor="itemName" className="header-container">
+          <FaDiceD6 />
+          Item Name
+        </label>
+        <input value={itemName} onInput={handleInput} type="text" id="itemName" />
 
         <input type="submit" value="Update" />
 

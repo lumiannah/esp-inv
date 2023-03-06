@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FaTools } from 'react-icons/fa'
+import { FaTools, FaMicrochip, FaBarcode, FaDiceD6 } from 'react-icons/fa'
 
 const statusColor = (item_stock_percent = 0, isHighContrast = false) => {
   if (item_stock_percent > 66) {
@@ -18,16 +18,41 @@ function DeviceList({ devices = [] }) {
       <thead>
         <tr>
           <th scope="col">Status</th>
-          <th scope="col">Device Name</th>
-          <th scope="col">Device Description</th>
+          <th scope="col">
+            <div className="header-container ">
+              <FaMicrochip />
+              <span>Device Name</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div className="header-container ">
+              <FaBarcode />
+              <span>Item ID</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div className="header-container ">
+              <FaDiceD6 />
+              <span>Item Name</span>
+            </div>
+          </th>
+
           <th scope="col">Settings</th>
         </tr>
       </thead>
       <tbody>
         {devices.length > 0 ? (
           devices.map((device) => {
-            const { id, name, description, item_stock_code, item_stock_amount, item_max_amount, item_stock_percent } =
-              device
+            const {
+              id,
+              name,
+              item_id,
+              item_name,
+              item_stock_code,
+              item_stock_amount,
+              item_max_amount,
+              item_stock_percent,
+            } = device
             return (
               <tr key={id} className="device" data-item-stock-code={item_stock_code}>
                 <td className="center-text">
@@ -46,8 +71,9 @@ function DeviceList({ devices = [] }) {
                   ></div>
                 </td>
                 <th scope="row">{name || 'No device name added'}</th>
-                <td>{description || 'No device description added'}</td>
-                <td className="center-text">
+                <td>{item_id || 'No item id added'}</td>
+                <td>{item_name || 'No item name added'}</td>
+                <td className="center-text hoverable">
                   <Link to={`${id}`}>
                     <button className="btn-with-icon">
                       <FaTools />

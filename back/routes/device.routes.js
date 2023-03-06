@@ -7,6 +7,7 @@ import {
   calibrateItemWidthAndMaxAmount,
   getUserDeviceById,
   getUserDevices,
+  updateUserDeviceById,
 } from '../controllers/device.controller.js'
 import {
   dataAdditionRules,
@@ -14,6 +15,7 @@ import {
   getDeviceRules,
   initialDistanceRules,
   itemCalibrationRules,
+  updateDeviceRules,
 } from '../validations/device.validations.js'
 
 const router = express.Router()
@@ -35,5 +37,8 @@ router.get('/', authRequired, getUserDevices)
 
 // Get user device by Id
 router.get('/:id', authRequired, getDeviceRules(), getUserDeviceById)
+
+// Update user device by Id
+router.put('/update/:id', authRequired, updateDeviceRules(), updateUserDeviceById)
 
 export default router

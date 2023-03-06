@@ -8,13 +8,13 @@ function Navbar() {
 
   return (
     <nav>
-      <Link to="/" className={'nav-el ' + (isActivePage('') ? 'active' : '')}>
+      <Link to="/" className={'nav-el hoverable ' + (isActivePage('') ? 'active' : '')}>
         Home
       </Link>
-      <Link to="/devices" className={'nav-el ' + (isActivePage('devices') ? 'active' : '')}>
+      <Link to="/devices" className={'nav-el hoverable ' + (isActivePage('devices') ? 'active' : '')}>
         Devices
       </Link>
-      <Link to="/user" className={'nav-el ' + (isActivePage('user') ? 'active' : '')}>
+      <Link to="/user" className={'nav-el hoverable ' + (isActivePage('user') ? 'active' : '')}>
         User
       </Link>
     </nav>

@@ -9,9 +9,9 @@ const deviceAdditionRules = () => {
 // validates: body.deviceId, body.distance
 const dataAdditionRules = () => {
   return [
-    body('deviceId').not().isEmpty().escape(),
+    body('deviceId').trim().not().isEmpty().escape(),
 
-    body('distance').not().isEmpty().isLength({ min: 1, max: 4 }).escape(),
+    body('distance').trim().not().isEmpty().isLength({ min: 1, max: 4 }).escape(),
 
     validate,
   ]
@@ -32,4 +32,22 @@ const getDeviceRules = () => {
   return [param('id').isInt(), validate]
 }
 
-export { deviceAdditionRules, dataAdditionRules, initialDistanceRules, itemCalibrationRules, getDeviceRules }
+// validates: param.id, body.name, body.description
+const updateDeviceRules = () => {
+  return [
+    param('id').isInt(),
+
+    body(['deviceName', 'itemId', 'itemName']).trim().optional({ nullable: true, checkFalsy: true }).escape(),
+
+    validate,
+  ]
+}
+
+export {
+  deviceAdditionRules,
+  dataAdditionRules,
+  initialDistanceRules,
+  itemCalibrationRules,
+  getDeviceRules,
+  updateDeviceRules,
+}
