@@ -1,13 +1,15 @@
 import { api } from './API'
 
 const calibrateInitialDistance = async (deviceId) => {
-  await api.post('/device/calibrate/initial/' + deviceId)
+  const response = await api.post('/device/calibrate/initial/' + deviceId)
+  return response.data
 }
 
 const calibrateItemWidthAndMaxAmount = async (deviceId, itemCount) => {
-  await api.post('/device/calibrate/item/' + deviceId, {
+  const response = await api.post('/device/calibrate/item/' + deviceId, {
     itemCount,
   })
+  return response.data
 }
 
 const getUserDevices = async () => {

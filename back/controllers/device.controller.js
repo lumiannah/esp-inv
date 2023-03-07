@@ -88,18 +88,22 @@ const calibrateInitialDistance = async (req, res) => {
     if (!device || device.user_id !== req.user.id) return res.sendStatus(403)
     if (!recentDistanceValue) return res.sendStatus(400)
 
-    const data = await databaseClient.device.update({
+    const updatedDevice = await databaseClient.device.update({
       where: {
         id: device.id,
       },
       data: {
         initial_distance: recentDistanceValue,
       },
+      select: {
+        id: true,
+        initial_distance: true,
+      },
     })
 
-    console.log(data)
+    console.log(updatedDevice)
 
-    return res.sendStatus(200)
+    return res.status(200).json(updatedDevice)
   } catch (error) {
     console.error(error)
     return res.sendStatus(500)
@@ -138,7 +142,7 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
     const itemWidth = deltaDistance / itemCount
     const maxAmount = ~~((device.initial_distance - 50) / itemWidth)
 
-    const data = await databaseClient.device.update({
+    const updatedDevice = await databaseClient.device.update({
       where: {
         id: device.id,
       },
@@ -147,11 +151,16 @@ const calibrateItemWidthAndMaxAmount = async (req, res) => {
         item_max_amount: maxAmount,
         date_calibrated: new Date().toISOString(),
       },
+      select: {
+        id: true,
+        item_width: true,
+        date_calibrated: true,
+      },
     })
 
-    console.log(data)
+    console.log(updatedDevice)
 
-    return res.sendStatus(200)
+    return res.status(200).json(updatedDevice)
   } catch (error) {
     console.error(error)
     return res.sendStatus(500)

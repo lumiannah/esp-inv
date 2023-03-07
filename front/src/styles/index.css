@@ -16,7 +16,7 @@
 
 body {
   font-size: 1.5em;
-  font-size: clamp(1em, 2vw, 2em);
+  font-size: clamp(1em, 2vw, 1.75em);
   font-family: 'Noto Serif';
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -24,6 +24,7 @@ body {
 
 main {
   padding: 1em;
+  text-align: center;
 }
 
 h1 {
@@ -32,12 +33,13 @@ h1 {
 
 h2 {
   font-size: 2em;
-  margin-block: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 h3 {
   font-size: 1.5em;
-  margin-block: 0.5em;
+  margin-block: 0 0.75em;
+  font-weight: bold;
 }
 
 a {
@@ -45,11 +47,18 @@ a {
   text-decoration: none;
 }
 
+:disabled {
+  color: var(--color-text);
+  background-color: #282424;
+}
+
 form {
   display: grid;
   text-align: center;
-  max-width: 800px;
-  margin-inline: auto;
+  background-color: #373533;
+  padding: 1em;
+  border-radius: 0.25em;
+  align-content: start;
 }
 
 input,
@@ -57,11 +66,11 @@ button,
 textarea {
   width: 100%;
   background-color: var(--color-text);
-  margin-block: 0.5em 1em;
   padding: 1em;
   border-radius: 0.25em;
   box-shadow: 0 0 0 1px #000;
   outline: none;
+  margin-block: 0.25em 1.5em;
 }
 
 input[type='submit'],
@@ -175,4 +184,20 @@ td.hoverable {
   display: flex;
   align-items: center;
   gap: 0.5em;
+}
+
+.grid {
+  display: grid;
+  gap: 2em;
+  align-items: start;
+}
+
+.col-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 600px) {
+  .col-3 {
+    grid-template-columns: 1fr;
+  }
 }
