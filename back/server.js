@@ -1,6 +1,7 @@
 import './config.js'
 import { createServer } from 'http'
 import app from './app.js'
+import { initWebSocket } from './websocket.js'
 
 // custom 404
 app.use((err, req, res, next) => {
@@ -15,5 +16,8 @@ app.use((err, req, res, next) => {
 })
 
 const httpServer = createServer(app)
+
+// Socket.IO
+initWebSocket(httpServer)
 
 httpServer.listen(process.env.NODE_PORT)
