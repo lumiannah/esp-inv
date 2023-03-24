@@ -24,7 +24,8 @@ export const initWebSocket = (httpServer) => {
   socketIo.use(wrap(passport.session()))
 
   socketIo.on('connection', async (socket) => {
-    const userId = socket.request.session.passport.user
+    const userId = socket.request.session.passport?.user
+
     const userDevices = await databaseClient.device.findMany({
       where: {
         user_id: userId,
@@ -36,7 +37,7 @@ export const initWebSocket = (httpServer) => {
 
     // join rooms corresponding to their device ids
     for (const device of userDevices) {
-      socket.join(device.id)
+      socket.join('device:' + device.id)
       console.log(`userId: ${userId} connected by deviceId: ${device.id}`)
     }
 
@@ -44,4 +45,6 @@ export const initWebSocket = (httpServer) => {
       console.log('user disconnected')
     })
   })
+
+  return socketIo
 }

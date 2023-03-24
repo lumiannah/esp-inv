@@ -1,5 +1,6 @@
 import { databaseClient } from '../db/client.js'
 import { createHash } from 'crypto'
+import { socketIo } from '../server.js'
 
 const addDevice = async (req, res) => {
   const { mac, email } = req.body
@@ -46,14 +47,14 @@ const addSensorData = async (req, res) => {
 
     if (!device) return res.sendStatus(403)
 
-    const data = await databaseClient.sensorData.create({
+    await databaseClient.sensorData.create({
       data: {
         device_id: +deviceId,
         value: +distance,
       },
     })
 
-    console.log(data)
+    socketIo.to('device:' + deviceId).emit('new-sensor-data', +deviceId)
 
     return res.sendStatus(201)
   } catch (error) {

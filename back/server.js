@@ -18,6 +18,6 @@ app.use((err, req, res, next) => {
 const httpServer = createServer(app)
 
 // Socket.IO
-initWebSocket(httpServer)
+export const socketIo = initWebSocket(httpServer)
 
 httpServer.listen(process.env.NODE_PORT)
